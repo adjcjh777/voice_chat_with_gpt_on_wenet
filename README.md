@@ -6,7 +6,9 @@
 
 ## 前期准备
 
-- 参考WeNet源项目下的[docs]: https://wenet.org.cn/wenet/ 
+- 参考WeNet源项目下的
+
+	[docs]: https://wenet.org.cn/wenet/
 
 	
 
