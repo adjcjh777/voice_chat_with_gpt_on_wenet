@@ -3,6 +3,7 @@
 ## 项目介绍
 
 本项目是在[WeNet](https://github.com/wenet-e2e/wenet)的基础上，在Windows11上结合其给出的示例并调用OPENAI的API做出的尝试性实验。
+![Uploading image.png…]()
 
 ## 准备
 
