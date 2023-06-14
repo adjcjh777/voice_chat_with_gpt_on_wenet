@@ -1,0 +1,266 @@
+* {
+    padding: 0;
+    margin: 20;
+
+}
+
+
+.chat_commento {
+    width: 800px;
+    height: 700px;
+    /* border-radius: 10px;
+    border: 2px solid #f4f5f7; */
+    margin: auto;
+}
+
+.clearfix::after {
+    content: "";
+    display: block;
+    clear: both;
+    width: 0;
+    height: 0;
+    line-height: 0;
+    visibility: hidden;
+}
+
+/* top */
+.chat_top {
+    width: 100%;
+    height: 30px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    font-size: 20px;
+    /* line-height: 50px; */
+    box-sizing: border-box;
+    font-weight: 550;
+    border-width: 0px;
+    background-color: #fff;
+    text-align: center;
+}
+
+/* middle */
+/* 左边 */
+.chat_middle {
+    width: 800px;
+    height: 500px;
+    position: relative;
+    box-sizing: border-box;
+    overflow: auto;
+    /* display: flex; */
+    /* flex-direction: column; */
+    border-width: 0px;
+    background-color: #fff;
+}
+
+.chat_top p {
+    background-color: #fff;
+}
+
+.rec_wave {
+    position: relative;
+    width: 700px;
+    top: 0;
+}
+
+.chat_left {
+    float: left;
+    flex: auto;
+    width: 70%;
+    height: 120px;
+    margin-bottom: 20px;
+}
+
+.chat_left_item_1 {
+    flex: auto;
+    width: 50px;
+    height: 50px;
+    background-color: #4459AB;
+    float: left;
+    margin: 10px;
+    /* margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px; */
+    text-align: center;
+    line-height: 50px;
+    color: white;
+    border-radius: 25px;
+}
+
+.chat_left_item_2 {
+    flex: auto;
+    width: 80%;
+    height: auto;
+    float: left;
+    margin: 10px;
+}
+
+.chat_left_time {
+    flex: auto;
+    width: 100%;
+    text-align: left;
+}
+
+
+.chat_left_content {
+    padding: 15px;
+    /* margin-top: 10px; */
+    background-color: #f4f5f7;
+    display: inline-block;
+    border-radius: 10px;
+    border-top-left-radius: 0px;
+}
+
+/* 右边 */
+.chat_right {
+    float: right;
+    flex: auto;
+    width: 70%;
+    height: auto;
+    margin: 10px;
+}
+
+.chat_right_item_1 {
+    flex: auto;
+    width: 50px;
+    height: 50px;
+    background-color: #4459AB;
+    float: right;
+    margin: 10px;
+    /* margin-top: 10px;
+    margin-left: 10px;
+    margin-right: 10px; */
+    text-align: center;
+    line-height: 50px;
+    color: white;
+    border-radius: 25px;
+}
+
+.chat_right_item_2 {
+    flex: auto;
+    width: 80%;
+    height: 100px;
+    float: right;
+    margin: 10px;
+    /* margin: 5px; */
+}
+
+.chat_right_time {
+    flex: auto;
+    width: 100%;
+    text-align: right;
+}
+
+.chat_right_content {
+    flex: auto;
+    float: right;
+    padding: 15px;
+    border-radius: 10px;
+    /* margin-top: 10px; */
+    border-top-right-radius: 0px;
+    background-color: #4F7cff;
+    color: white;
+}
+
+/* foot */
+.chat_foot {
+    width: 800px;
+    height: 140px;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    position: relative;
+}
+
+.chat_context {
+    width: 100%;
+    height: 1%;
+    font-size: 17px;
+    box-sizing: border-box;
+    outline: none;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    border-width: 0px;
+    padding: 16px;
+}
+
+.voice-container {
+    position: relative;
+    width: 800px;
+    height: 145px;
+    background: rgba(255, 255, 255, 1);
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+}
+
+.voice-container .voice {
+    height: 100px;
+    width: 100%;
+    border-radius: 8px;
+}
+
+.voice-text {
+    width: 80%;
+    background: #fff;
+    padding: 10px;
+}
+
+.chat_commit {
+    width: 100px;
+    height: 145px;
+    color: white;
+    background-color: #4F7cff;
+    line-height: 30px;
+    text-align: center;
+    border-radius: 10px;
+    position: absolute;
+    right: 0px;
+    bottom: 0px;
+
+}
+
+.chat_commit.end {
+    display: none;
+}
+
+.chat_commit.end.show {
+    display: inline;
+}
+
+.chat_context {
+    resize: none;
+}
+
+.chat_context::placeholder {
+    color: black;
+    font-weight: 500k;
+}
+
+.line {
+    /* width: 100%; */
+    border-top: 1px;
+    border-color: #f4f5f7;
+    border-style: solid;
+}
+
+#video-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+}
+
+#video-background video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.content {
+    position: relative;
+    z-index: 1;
+    padding: 20px;
+    color: #fff;
+    font-size: 24px;
+    text-align: center;
+}

@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="ch">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <script src="static/js/jquery-3.2.1.min.js"></script>
+    <script src="static/js/recorder/recorder-core.js"></script>
+    <script src="static/js/recorder/extensions/lib.fft.js"></script>
+    <script src="static/js/recorder/extensions/frequency.histogram.view.js"></script>
+    <script src="static/js/recorder/engine/pcm.js"></script>
+    <script src="static/js/SoundRecognizer.js"></script>
+    <title>Chat with GPT-3.5 Turbo</title>
+</head>
+
+<body>
+    <div id="video-background">
+        <video autoplay loop muted>
+            <source src="./public/background.mp4" type="video/mp4">
+        </video>
+    </div>
+    <!-- entry -->
+    <div class="chat_commento">
+        <!-- top -->
+        <div class="chat_top">
+            Chat with GPT-3.5 Turbo
+        </div>
+        <!-- line -->
+        <div class="line"></div>
+        <!-- middle -->
+        <div class="chat_middle" id="chat_middle_item">
+
+        </div>
+
+        <div class="line"></div>
+        <!-- foot -->
+        <div class="chat_foot">
+            <!-- context -->
+            <!-- <textarea class="chat_context" id="chat_context_item" cols="30" rows="10"></textarea> -->
+            <div class="voice-container">
+                <div class="voice">
+                    <!-- recwave -->
+                    <div class="rec_wave" id="client-word-recorder">
+                        <div class="pd">
+                            <div style="text-align:center;height:30px;width:100%;
+                                                                        border:0px solid #bcbcbc;color:#000;box-sizing: border-box;display:inline-block"
+                                class="recwave">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="voice-text" id="result">此处显示识别结果</div>
+                    <button type="primary" class="chat_commit" id="beginBtn">开始聊天</button>
+                    <button type="primary" class="chat_commit end" id="endBtn">结束聊天</button>
+                </div>
+            </div>
+
+        </div>
+        <script>
+            //chat
+            const url = "https://yuyin.pages.dev/v1/chat/completions";
+            // const url = "https://api.openai.com/v1/chat/completions";
+            const apiKey = 'YOUR_API_KEY';
+            let context = [];//记录对话的上下文
+
+            const headers = {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json'
+            };
+            const payload = {
+                "model": "gpt-3.5-turbo-0301",
+                "messages": [],
+                "max_tokens": 2048
+            };
+            var send_message = document.getElementById("chat_middle_item");
+            // 辅助函数，用于确保数字始终是两位数
+            var date = new Date();
+            function padNumber(number) {
+                return number.toString().padStart(2, '0');
+            }
+            function displayResponse(response) {
+                //接收信息--来自gpt-3.5的反馈信息
+                var responseDiv = document.createElement("div");
+                responseDiv.textContent = response;
+                var str = response;
+                var hour = date.getHours();
+                var mm = date.getMinutes();
+                var ss = date.getSeconds();
+                var time = padNumber(hour) + ':' + padNumber(mm) + ':' + padNumber(ss);
+                var totaltime = responsetime.getTime() - sendtime.getTime();//获取回复时间
+                var ans = '<div class="chat_left_item_1 clearfix">GPT</div>' +
+                    '<div class="chat_left_item_2">' +
+                    '<div class="chat_left_time clearfix">' + time + '  ' + '响应时间：' + totaltime + 'ms' + '</div>' +
+                    '<div class="chat_left_content clearfix">' + str + '</div>'
+                    + '</div>';
+                responseDiv.setAttribute("class", "chat_left");
+                responseDiv.innerHTML = ans;
+                send_message.append(responseDiv);
+                send_message.scrollTop = send_message.scrollHeight;
+            }
+
+            var assitant_message;
+            function sendRequest(text) {
+                //插入信息--来自用户的信息
+                context.push({
+                    "role": "user",
+                    "content": text
+                });
+                payload.messages = context;
+                console.log(payload);
+                sendtime = new Date();
+                fetch(url, {
+                    method: 'POST',
+                    headers: headers,
+                    body: JSON.stringify(payload)
+                })
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`请求错误: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        responsetime = new Date();
+                        assitant_message = data.choices[0].message;
+                        context.push(assitant_message);
+                        displayResponse(`${data.choices[0].message.content}`);
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+
+            function send2gpt(message) {
+                var str = message;
+                if (str === "") {
+                    return; // 如果输入为空，则不执行任何操作
+                }
+                var date = new Date();
+                var hour = date.getHours();
+                var mm = date.getMinutes();
+                var ss = date.getSeconds();
+                var time = padNumber(hour) + ':' + padNumber(mm) + ':' + padNumber(ss);
+                var ans =
+                    '<div class="chat_right_item_1 clearfix">我</div>' +
+                    '<div class="chat_right_item_2">' +
+                    '<div class="chat_right_time clearfix">' +
+                    time +
+                    '</div>' +
+                    '<div class="chat_right_content clearfix">' +
+                    str +
+                    '</div>' +
+                    '</div>';
+                var oLi = document.createElement("div");
+                oLi.setAttribute("class", "chat_right");
+                oLi.innerHTML = ans;
+                send_message.append(oLi);
+                if (str.endsWith("。")) {
+                    sendRequest(str);
+                    send_message.scrollTop = send_message.scrollHeight;
+                    document.getElementById("result").textContent = "";
+                    console.log(context);
+                }
+            }
+            // 录音和提交服务器以及响应部分
+            var wenetWs = null;
+            var timeLoop = null;
+            var result = "";
+            var socketUrl = 'ws://127.0.0.1:10086'//websocket连接docker映射到本地的10086端口
+            $(document).ready(function () {
+                $('#beginBtn').on('click', startRecording)
+                $('#endBtn').on('click', stopRecording)
+            })
+            //建立websocket对象
+            function openWebSocket(url) {
+                if ("WebSocket" in window) {
+                    wenetWs = new WebSocket(url)
+                    wenetWs.onopen = function () {
+                        console.log("Websocket 连接成功，开始识别")
+                        wenetWs.send(JSON.stringify({
+                            "signal": "start",
+                            "nbest": 1,
+                            "continuous_decoding": true
+                        }))
+                    }
+                    wenetWs.onmessage = function (_msg) { parseResult(_msg.data) }
+                    wenetWs.onclose = function () {
+                        console.log("WebSocket 连接断开")
+                        if (result.length > 0) {
+                            if (result.endsWith("，")) {
+                                result = result.slice(0, -1)
+                            }
+                            $("#result").html(result + "。")
+                            result = ""
+                        }
+                    }
+                    wenetWs.onerror = function () { console.log("WebSocket 连接失败") }
+                }
+            }
+
+            function parseResult(data) {
+                var data = JSON.parse(data)
+                if (data.type == 'partial_result') {
+                    nbest = JSON.parse(data.nbest)
+                    var sentence = nbest[0].sentence
+                    if (sentence.length > 0) {
+                        $("#result").html(result + sentence)
+                    }
+                } else if (data.type == 'final_result') {
+                    nbest = JSON.parse(data.nbest)
+                    var sentence = nbest[0].sentence
+                    if (sentence.length > 0) {
+                        console.log(context)
+                        result += sentence + "。"
+                        $("#result").html(result)
+                        // 使用中文句号检测
+                        //第sendrequest之前 context长度为0，是空数组
+                        if (context.length === 0) {
+                            send2gpt(result);
+                        }
+                        //后续的sendRequest都是在context长度大于1的情况下进行
+                        //只有上面一条的响应收到后才进行下一条信息的发送
+                        else if (context.at(-1)["role"] === "assistant") {
+                            send2gpt(result);
+                        }
+                        result = ""
+                    }
+                    console.log(nbest)
+                }
+            }
+            function TransferUpload(number, blobOrNull, duration, blobRec, isClose) {
+                if (blobOrNull) {
+                    var blob = blobOrNull
+                    var encTime = blob.encTime
+                    var reader = new FileReader()
+                    reader.onloadend = function () { wenetWs.send(reader.result) }
+                    reader.readAsArrayBuffer(blob)
+                }
+            }
+            function startRecording() {
+                // init recorder
+                SoundRecognizer.init({
+                    soundType: 'pcm',
+                    sampleRate: 16000,
+                    recwaveElm: '.recwave',
+                    translerCallBack: TransferUpload
+                })
+                openWebSocket(socketUrl)
+
+                // Change button state
+                $('#beginBtn').hide()
+                $('#endBtn').addClass('show')
+            }
+
+            function stopRecording() {
+                wenetWs.send(JSON.stringify({ "signal": "end" }))
+                SoundRecognizer.recordClose()
+                $('#endBtn').removeClass('show')
+                $('#beginBtn').show()
+            }
+
+        </script>
+</body>
+
+</html>
